@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
@@ -18,11 +19,13 @@ namespace _86BoxManager.Registry
             {
                 Formatting = Formatting.Indented
             };
-            var ass = typeof(Configs).Assembly;
-            var loc = IOPath.GetFullPath(ass.Location);
-            var dir = IOPath.GetDirectoryName(loc) ?? string.Empty;
-            BoxConfigName = IOPath.Combine(dir, "86Box.json");
-            VmxConfigName = IOPath.Combine(dir, "86BoxVMs.json");
+
+            var userConfigDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create);
+            var appConfigDir = IOPath.Combine(userConfigDir, "86BoxManager");
+            if (!Directory.Exists(appConfigDir)) Directory.CreateDirectory(appConfigDir);
+
+            BoxConfigName = IOPath.Combine(appConfigDir, "86Box.json");
+            VmxConfigName = IOPath.Combine(appConfigDir, "86BoxVMs.json");
         }
 
         private static void WriteJson(string fileName, object obj)
